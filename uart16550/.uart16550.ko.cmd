@@ -1,0 +1,1 @@
+cmd_/mnt/hgfs/VMshare/uart16550/uart16550.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o /mnt/hgfs/VMshare/uart16550/uart16550.ko /mnt/hgfs/VMshare/uart16550/uart16550.o /mnt/hgfs/VMshare/uart16550/uart16550.mod.o

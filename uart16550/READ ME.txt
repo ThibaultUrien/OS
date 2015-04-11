@@ -1,0 +1,10 @@
+READ ME FILE
+we first register the two character devices and the corresponding file structure. Previously, we used the register_chrdev_region, which always have the device busy problem. Later we choose the current way. We tried to unregister the first device if the second fail.
+
+ we construct a struct called device_data which has the ingoing and outgoing kfifo, and the two task processes task_user_get_data, task_user_push_data. we also make a function wait_for_queue. The ready-to-run processes are maintained on a run queue. A ready-to-run process has the state TASK_RUNNING. we called the schedule() function here.
+
+  And in the file operation structure, we make it supports different kinds of operations to the file, but did not finish the ioctl part. 
+
+  In the interrupt_handler part, we deal with the stuff between the kernel space and the hardware device. When the device tell the kernel it has data and kfifo is not full, kfifo could read from the device. when the device tell it could be written, and kfifo is not empty, kfifo write to the device. we enable and disable the interruption every time it is called.
+
+  Finally, we debug for a long time, but still many problems exists. Really sorry for that.
