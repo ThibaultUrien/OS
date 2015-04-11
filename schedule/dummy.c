@@ -70,7 +70,9 @@ static void dequeue_task_dummy(struct rq *rq, struct task_struct *p, int flags)
 	_dequeue_task_dummy(p);
 	sub_nr_running(rq,1);
 }
-
+/*
+* Maybe : ?The task at the top of rq has yieled we can switch it with an other task? 
+*/
 static void yield_task_dummy(struct rq *rq)
 {
 }
