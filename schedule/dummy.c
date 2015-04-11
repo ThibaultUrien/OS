@@ -103,6 +103,8 @@ static void dequeue_task_dummy(struct rq *rq, struct task_struct *p, int flags)
 */
 static void yield_task_dummy(struct rq *rq)
 {
+	struct task_struct *curr = rq->curr;
+         dequeue_task_dummy(rq, curr, 1)；
 }
 /*
  * adding a new task
@@ -112,6 +114,8 @@ static void yield_task_dummy(struct rq *rq)
 */
 static void check_preempt_curr_dummy(struct rq *rq, struct task_struct *p, int flags)
 {
+	if (p->prio < rq->curr->prio)
+      resched_task(rq->curr); //resched_task is used to mark that a current running task 
 }
 
 static struct task_struct *pick_next_task_dummy(struct rq *rq, struct task_struct* prev)
@@ -132,6 +136,9 @@ static struct task_struct *pick_next_task_dummy(struct rq *rq, struct task_struc
 */
 static void put_prev_task_dummy(struct rq *rq, struct task_struct *prev)
 {
+	 if (prev->se.on_rq){
+           enqueue_task_dummy(rq, prev,1 );// do not know the flags problem, simply set it to 1
+         }
 }
 /*
 * See set_curr_task_rt in rt.c for implementation exemple.
@@ -139,6 +146,10 @@ static void put_prev_task_dummy(struct rq *rq, struct task_struct *prev)
 */
 static void set_curr_task_dummy(struct rq *rq)
 {
+	struct task_struct *p = rq->curr;
+	struct sched_dummy_entity *se = &rq->curr->se;
+	p->se.exec_start = rq->clock;
+	dequeue_task_dummy(rq,p,1);
 }
 /*
 * The tick function is invoked regularly, every N ms (I think N varies from 1 to 10).
@@ -149,8 +160,9 @@ static void set_curr_task_dummy(struct rq *rq)
 * See task_tick_rt in rt.c for implementation exemple.
 * Comment in rt.c : ""
 */
-static void task_tick_dummy(struct rq *rq, struct task_struct *curr, int queued)
+static void task_tick_dummy(struct rq *rq, struct task_struct *curr, int queued) //not finished, do not know queued
 {
+	update_curr_dummy(rq);
 }
 
 /*
