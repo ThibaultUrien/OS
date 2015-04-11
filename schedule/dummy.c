@@ -99,7 +99,10 @@ static void put_prev_task_dummy(struct rq *rq, struct task_struct *prev)
 static void set_curr_task_dummy(struct rq *rq)
 {
 }
-
+/*
+* one tick on scheduler : it could be the moment to change the running task if there is non running task with equal priority,
+* we have to check if no low priority prosses is starving.
+*/
 static void task_tick_dummy(struct rq *rq, struct task_struct *curr, int queued)
 {
 }
