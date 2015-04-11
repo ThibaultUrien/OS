@@ -77,7 +77,8 @@ static void yield_task_dummy(struct rq *rq)
 {
 }
 /*
-check running time expires or a higher priority task come for the current ruuning task, but where is the flags come from
+*check running time expires or a higher priority task come for the current ruuning task, but where is the flags 
+*come
 */
 static void check_preempt_curr_dummy(struct rq *rq, struct task_struct *p, int flags)
 {
