@@ -24,6 +24,30 @@ static inline unsigned int get_age_threshold(void)
 	return sysctl_sched_dummy_age_threshold;
 }
 
+static inline int has_pushable_tasks(struct rq *rq)
+{
+	return !plist_head_empty(&rq->rt.pushable_tasks);
+}
+
+#ifdef CONFIG_SMP
+static void dequeue_pushable_task(struct rq *rq, struct task_struct *p)
+{
+	plist_del(&p->pushable_tasks, &rq->rt.pushable_tasks);
+
+	/* Update the new highest prio pushable task */
+	if (has_pushable_tasks(rq)) {
+		p = plist_first_entry(&rq->rt.pushable_tasks,
+				      struct task_struct, pushable_tasks);
+		rq->rt.highest_prio.next = p->prio;
+	} else
+		rq->rt.highest_prio.next = MAX_RT_PRIO;
+}
+#else
+static void dequeue_pushable_task(struct rq *rq, struct task_struct *p)
+{
+
+}
+#endif /* CONFIG_SMP */
 /*
  * Init
  */
@@ -36,7 +60,10 @@ void init_dummy_rq(struct dummy_rq *dummy_rq, struct rq *rq)
 /*
  * Helper functions
  */
-
+static int pull_rt_task(struct rq *this_rq)
+{
+	TODO
+}
 static inline struct task_struct *dummy_task_of(struct sched_dummy_entity *dummy_se)
 {
 	return container_of(dummy_se, struct task_struct, dummy_se);
@@ -135,6 +162,11 @@ static void task_tick_dummy(struct rq *rq, struct task_struct *curr, int queued)
 */
 static void switched_from_dummy(struct rq *rq, struct task_struct *p)
 {
+	if (!task_on_rq_queued(p) || rq->rt.rt_nr_running)
+		return;
+
+	if (pull_dummy_task(rq))
+		resched_curr(rq);
 }
 
 /*
@@ -147,6 +179,14 @@ static void switched_from_dummy(struct rq *rq, struct task_struct *p)
 */
 static void switched_to_dummy(struct rq *rq, struct task_struct *p)
 {
+
+	if (task_on_rq_queued(p) && rq->curr != p) {
+#ifdef CONFIG_SMP
+		//TODO ???
+#endif /* CONFIG_SMP */
+		if (p->prio < rq->curr->prio)
+			resched_curr(rq);
+	}
 }
 
 /*
@@ -158,6 +198,22 @@ static void switched_to_dummy(struct rq *rq, struct task_struct *p)
 */
 static void prio_changed_dummy(struct rq*rq, struct task_struct *p, int oldprio)
 {
+	if (!task_on_rq_queued(p))
+		return;
+
+	if (rq->curr == p) {
+
+#ifdef CONFIG_SMP
+		//TODO???
+#endif /* CONFIG_SMP */
+
+	} 
+	else 
+	{
+	
+		if (p->prio < rq->curr->prio)
+			resched_curr(rq);
+	}
 }
 
 /*
@@ -184,6 +240,23 @@ static inline int select_task_rq_dummy(struct task_struct *p, int cpu, int sd_fl
 
 static void set_cpus_allowed_dummy(struct task_struct *p,  const struct cpumask *new_mask)
 {
+	struct rq *rq;
+	int weight;
+
+	BUG_ON(!rt_task(p));
+
+	if (!task_on_rq_queued(p))
+		return;
+
+	weight = cpumask_weight(new_mask);
+
+	/*
+	 * Only update if the process changes its state from whether it
+	 * can migrate or not.
+	 */
+	if ((p->nr_cpus_allowed > 1) == (weight > 1))
+		return;
+	rq = task_rq(p);
 }
 #endif
 /*
