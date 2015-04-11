@@ -72,12 +72,16 @@ static void dequeue_task_dummy(struct rq *rq, struct task_struct *p, int flags)
 }
 /*
 * Maybe : ?The task at the top of rq has called yield. We can switch it with an other task? 
+* See yield_task_rt in rt.c for implementation exemple.
 */
 static void yield_task_dummy(struct rq *rq)
 {
 }
 /*
- adding a new task
+ * adding a new task
+ * See check_preempt_curr_rt in rt.c for implementation exemple.
+ * Comment in rt.c :
+ * "Preempt the current task with a newly woken task if needed"
 */
 static void check_preempt_curr_dummy(struct rq *rq, struct task_struct *p, int flags)
 {
@@ -95,36 +99,72 @@ static struct task_struct *pick_next_task_dummy(struct rq *rq, struct task_struc
 		return NULL;
 	}
 }
-
+/*
+* See put_prev_task_rt in rt.c for implementation exemple.
+* Comment in rt.c : ""
+*/
 static void put_prev_task_dummy(struct rq *rq, struct task_struct *prev)
 {
 }
-
+/*
+* See set_curr_task_rt in rt.c for implementation exemple.
+* Comment in rt.c : ""
+*/
 static void set_curr_task_dummy(struct rq *rq)
 {
 }
 /*
-*The tick function is invoked regularly, every N ms (I think N varies from 1 to 10).
-the function allows you to preempt a task.  Keep in mind that you don’t have to preempt the current 
-task with every tick (it would result in unnecessary overhead). In contrary, you should wait for K ticks, 
-where K is based on the task's priority, for instance.
+* The tick function is invoked regularly, every N ms (I think N varies from 1 to 10).
+* the function allows you to preempt a task.  Keep in mind that you don’t have to preempt the current 
+* task with every tick (it would result in unnecessary overhead). In contrary, you should wait for K ticks, 
+* where K is based on the task's priority, for instance.
+*
+* See task_tick_rt in rt.c for implementation exemple.
+* Comment in rt.c : ""
 */
 static void task_tick_dummy(struct rq *rq, struct task_struct *curr, int queued)
 {
 }
 
+/*
+* See switched_from_rt in rt.c for implementation exemple.
+*
+* Comment in rt.c : 
+* "When switch from the rt queue, we bring ourselves to a position
+* that we might want to pull RT tasks from other runqueues."
+*/
 static void switched_from_dummy(struct rq *rq, struct task_struct *p)
 {
 }
 
+/*
+* See switched_to_rt in rt.c for implementation exemple.
+*
+* Comment in rt.c : 
+* "When switching a task to RT, we may overload the runqueue
+* with RT tasks. In this case we try to push them off to
+* other runqueues".
+*/
 static void switched_to_dummy(struct rq *rq, struct task_struct *p)
 {
 }
 
+/*
+* See prio_changed_rt in rt.c for implementation exemple.
+*
+* Comment in rt.c : 
+* "Priority of the task has changed. This may cause
+* us to initiate a push or pull."
+*/
 static void prio_changed_dummy(struct rq*rq, struct task_struct *p, int oldprio)
 {
 }
 
+/*
+* Seeget_rr_interval_rt in rt.c for implementation exemple.
+*
+* Comment in rt.c : ""
+*/
 static unsigned int get_rr_interval_dummy(struct rq* rq, struct task_struct *p)
 {
 	return get_timeslice();
