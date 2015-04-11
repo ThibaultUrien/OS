@@ -76,10 +76,7 @@ static void dequeue_task_dummy(struct rq *rq, struct task_struct *p, int flags)
 static void yield_task_dummy(struct rq *rq)
 {
 }
-/*
-*check running time expires or a higher priority task come for the current ruuning task, but where is the flags 
-*come
-*/
+
 static void check_preempt_curr_dummy(struct rq *rq, struct task_struct *p, int flags)
 {
 }
@@ -181,3 +178,7 @@ struct dummy_rq {
 	.get_rr_interval	= get_rr_interval_dummy,
 	.update_curr		= update_curr_dummy,
 };
+
+/* LINKS
+* about methodes we can use : http://www.makelinux.net/books/lkd2/ch04lev1sec2
+*/
