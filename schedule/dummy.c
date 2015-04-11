@@ -77,8 +77,7 @@ static void yield_task_dummy(struct rq *rq)
 {
 }
 /*
-*check running time expires or a higher priority task come for the current ruuning task, but where is the flags 
-*come
+ adding a new task
 */
 static void check_preempt_curr_dummy(struct rq *rq, struct task_struct *p, int flags)
 {
@@ -105,8 +104,10 @@ static void set_curr_task_dummy(struct rq *rq)
 {
 }
 /*
-* one tick on scheduler : it could be the moment to change the running task if there is non running task with equal priority,
-* we have to check if no low priority prosses is starving.
+*The tick function is invoked regularly, every N ms (I think N varies from 1 to 10).
+the function allows you to preempt a task.  Keep in mind that you don’t have to preempt the current 
+task with every tick (it would result in unnecessary overhead). In contrary, you should wait for K ticks, 
+where K is based on the task's priority, for instance.
 */
 static void task_tick_dummy(struct rq *rq, struct task_struct *curr, int queued)
 {
